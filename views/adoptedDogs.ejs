@@ -1,0 +1,26 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+
+<div class="container w=75 p-4">
+
+    <h2 class="text-center">Adopted Dogs</h2>
+
+    <% adoptedDogs.forEach((dog) => { %>
+    <div class="p-4">
+    <div class="card text-center">
+  <div class="card-header">
+    <%- dog.name %>
+  </div>
+  <div class="card-body">
+    <p class="card-text"><%- dog.description %></p>
+    <a href="#" class="btn btn-primary">Learn More</a>
+  </div>
+</div>
+</div>
+<% }); %>
+
+   
+
+</div>
+
+    <%- include('partials/foot') %>

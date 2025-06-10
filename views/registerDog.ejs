@@ -1,0 +1,43 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+
+<div class="container mx-auto p-5 m-5 w-50">
+    <h4 class="text-center p-4">Register A Dog For Adoption:</h4>
+    <form action="/registerDog" method="POST" id="registerDogForm" enctype="application/x-www-form-urlencoded">
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Dog's Name:</label>
+    <input type="text" class="form-control" name="name" id="dogName" aria-describedby="textHelp">
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Brief Description of Dog:</label>
+    <textarea rows="3" name="description" class="form-control" id="dogDescription"></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>
+
+    <%- include('partials/foot') %>
+
+     <script>
+
+
+                const registerForm = document.getElementById('registerDogForm');
+
+                registerForm.addEventListener('submit', async (e) => {
+                  e.preventDefault();
+
+                  const name = registerForm.name.value;
+                  const description = registerForm.description.value;
+
+               
+   const res = await fetch('/registerDog', {
+                      method: 'POST',
+                      body: JSON.stringify({ name, description}),
+                      headers: { 'Content-Type': 'application/json' }
+                    });
+                    .then((res) => e.reset())
+                  .catch (err) {
+                    return err
+                  }
+                })
+              </script>

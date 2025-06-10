@@ -1,20 +1,57 @@
 <%- include('partials/head') %>
-<%- include('partials/nav') %>
+  <%- include('partials/nav') %>
 
 
-<div class="container mx-auto p-5 m-5 w-25">
-    <h4 class="text-center p-4">Create An Account:</h4>
-    <form>
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-  </div>
-  <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Password</label>
-    <input type="password" class="form-control" id="exampleInputPassword1">
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-</div>
+    <div class="container mx-auto p-5 m-5 w-50">
+      <h4 class="text-center p-4">Create An Account:</h4>
+      <form action="/signup" method="POST" id="signupForm" enctype="application/x-www-form-urlencoded">
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Email address</label>
+          <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          <% if (email !=="" ) { %>
+            <div class="invalid-feedback">
+              <%= email %>
+            </div>
+            <% } %>
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+          <% if (password !=="" ) { %>
+            <div class="invalid-feedback">
+              <%= password %>
+            </div>
+            <% } %>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+
+
+
+
+
 
     <%- include('partials/foot') %>
+
+      <script>
+
+        const signupForm = document.getElementById('signupForm');
+
+        signupForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const email = signupForm.email.value;
+          const password = signupForm.password.value;
+
+          try {
+            const res = await fetch('/signup', {
+              method: 'POST',
+              body: JSON.stringify({ email, password }),
+              headers: { 'Content-Type': 'application/json' }
+            }).then((res) => console.log(res))
+          } catch (err) { console.log(err) };
+        });
+
+      </script>

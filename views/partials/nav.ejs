@@ -1,31 +1,29 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Dog Adoption Website</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
       <ul class="navbar-nav d-flex flex-row>
-        <li class=" nav-item">
-        <a class="nav-link active" aria-current="page" href="/">Home</a>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/login">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/register">Register A Dog</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             View Dogs
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/registered">Registered Dogs</a></li>
-            <li><a class="dropdown-item" href="/adopted">Adopted Dogs</a></li>
+            <li><a class="dropdown-item" href="/adoptableDogs">Adoptable Dogs</a></li>
+            <li><a class="dropdown-item" href="/adoptedDogs">Adopted Dogs</a></li>
           </ul>
         </li>
-
+        <li class="nav-item">
+          <a class="nav-link" href="/registerDog">Register A Dog</a>
+        </li>
       </ul>
     </div>
   </div>
