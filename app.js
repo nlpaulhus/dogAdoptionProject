@@ -10,11 +10,10 @@ const adoptedDogs = require("./routes/adoptedDogs");
 const mongoose = require("mongoose");
 const env = require("dotenv").config();
 
-const dbURI =
-  "mongodb+srv://nlpaulhus:sPgbXnbnsMVQxhAq@cluster0.h7vzrrc.mongodb.net/dog_adoption_website?retryWrites=true&w=majority";
+
 
 mongoose
-  .connect(dbURI)
+  .connect(process.env.dbURI)
   .then((result) => console.log("Connected to database"))
   .then((result) => {
     app.listen(3000, () => {
