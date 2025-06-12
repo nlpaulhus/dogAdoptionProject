@@ -2,15 +2,13 @@ const express = require("express");
 const session = require("express-session");
 const app = express();
 const ejs = require("ejs");
+const env = require("dotenv").config();
 const login = require("./routes/login");
 const signup = require("./routes/signup");
 const registerDog = require("./routes/registerDog");
 const adoptableDogs = require("./routes/adoptableDogs");
 const adoptedDogs = require("./routes/adoptedDogs");
 const mongoose = require("mongoose");
-const env = require("dotenv").config();
-
-
 
 mongoose
   .connect(process.env.dbURI)
@@ -36,7 +34,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static("public"));
 app.set("view engine", "ejs");
+app.set("views", "views");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

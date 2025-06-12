@@ -34,7 +34,7 @@
                       method: 'POST',
                       body: JSON.stringify({ name, description}),
                       headers: { 'Content-Type': 'application/json' }
-                    });
+                    })
                     .then((res) => e.reset())
                   .catch (err) {
                     return err
