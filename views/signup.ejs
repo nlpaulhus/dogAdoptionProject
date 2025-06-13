@@ -4,27 +4,18 @@
 
     <div class="container mx-auto p-5 m-5 w-50">
       <h4 class="text-center p-4">Create An Account:</h4>
-      <form action="/signup" method="POST" id="signupForm" enctype="application/x-www-form-urlencoded">
+      <form action="/signup" method="POST" id="signupForm">
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">Email address</label>
           <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-          <% if (error.email !=="" ) { %>
-            <div class="invalid-feedback">
-              <%= error.email %>
-            </div>
-            <% } %>
         </div>
         <div class="mb-3">
           <label for="exampleInputPassword1" class="form-label">Password</label>
           <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-          <% if (error.password !=="" ) { %>
-            <div class="invalid-feedback">
-              <%= error.password %>
-            </div>
-            <% } %>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+      <div id="formResponse"></div>
     </div>
 
 
@@ -33,25 +24,39 @@
 
 
 
-      <%- include('partials/foot') %>
 
-        <script>
 
-          const signupForm = document.getElementById('signupForm');
+    <%- include('partials/foot') %>
 
-          signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+      <script>
 
-            const email = signupForm.email.value;
-            const password = signupForm.password.value;
 
-            try {
-              await fetch('/signup', {
-                method: 'POST',
-                body: JSON.stringify({ email, password }),
-                headers: { 'Content-Type': 'application/json' }
-              })
-            } catch (err) { console.log(err) };
-          });
+        const signupForm = document.getElementById('signupForm');
+        const responseMessage = document.getElementById('formResponse');
 
-        </script>
+        signupForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const email = signupForm.email.value;
+          const password = signupForm.password.value;
+
+          const res = await fetch('/signup', {
+            method: 'POST',
+            body: JSON.stringify({ email, password }),
+            headers: { 'Content-Type': 'application/json' }
+          })
+            .then(res => res.json())
+            .then(res => {
+              if (res.success) {
+                window.location.replace('/loggedIn');
+              } else {
+
+              responseMessage.className = "alert alert-danger";
+              responseMessage.style.margin = "10px 0px"
+              responseMessage.innerHTML = res.email ? res.email : res.password;
+              }
+            })
+            .catch(err => console.log(err));
+        });
+
+      </script>

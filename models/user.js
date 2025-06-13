@@ -25,32 +25,6 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.statics.login = async function (email, password) {
-  try {
-    const user = await this.findOne({ email });
-    const auth = bcrypt.compare(password, user.password);
-    if (auth) {
-      return user;
-    } else {
-      throw new Error("invalid login credentials");
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-//   if (!user) {
-//     errors.email = "Email address is not associated with a valid account.";
-//     return errors;
-//   }
-//   const auth = bcrypt.compare(password, user.password);
-// if (!auth) {
-//   errors.password = "Incorrect password";
-//   return errors;
-// } else {
-//   return user;
-// }
-
-const User = mongoose.model("user", userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;
