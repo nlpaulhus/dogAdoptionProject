@@ -5,7 +5,8 @@ const { signup_post } = require("../controllers/authController");
 router
   .route("/")
   .get((req, res) => {
-    res.render("signup");
+    let isLoggedIn = false;
+    res.render("signup", { isLoggedIn });
   })
   .post((req, res) => signup_post(req, res));
 

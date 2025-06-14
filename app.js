@@ -12,14 +12,14 @@ const ejs = require("ejs");
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
-    saveUninitialized: true,
+    saveUninitialized: false,
     resave: false,
   })
 );
 
 app.use((req, res, next) => {
-  res.locals.content = req.session.content;
-  delete req.session.content;
+  res.locals.user = req.session.user;
+  delete req.session.user;
   next();
 });
 
@@ -36,10 +36,13 @@ app.use(cors());
 
 //Import routes:
 const login = require("./routes/login");
+const logout = require("./routes/logout");
 const signup = require("./routes/signup");
 const registerDog = require("./routes/registerDog");
 const adoptableDogs = require("./routes/adoptableDogs");
 const adoptedDogs = require("./routes/adoptedDogs");
+const home = require("./routes/home");
+const { requireAuth } = require("./middlewares/authMiddleWare");
 
 //Middleware:
 app.use(express.json());
@@ -48,18 +51,12 @@ app.use(cookieParser());
 
 //ROUTES:
 app.use("/login", login);
+app.use("/logout", logout);
 app.use("/signup", signup);
 app.use("/registerDog", registerDog);
 app.use("/adoptableDogs", adoptableDogs);
 app.use("/adoptedDogs", adoptedDogs);
-
-app.get("/", (req, res) => {
-  res.render("index");
-});
-
-app.get("/loggedIn", (req, res) => {
-  res.render("loggedIn");
-});
+app.use("/", home);
 
 app.use((req, res) => {
   res.render("404");

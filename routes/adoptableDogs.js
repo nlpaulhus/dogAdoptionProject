@@ -1,14 +1,9 @@
 const express = require("express");
 let router = express.Router();
 const { requireAuth } = require("../middlewares/authMiddleWare");
+const Dog = require("../models/dog");
+const {adoptable_get} = require("../controllers/dogController");
 
-router.route("/").get(requireAuth, (req, res) => {
-  let adoptableDogs = [
-    { name: "Sadie", description: "The Best" },
-    { name: "Goli", description: "Super cute" },
-    { name: "Mochi", description: "nervous" },
-  ];
-  res.render("adoptableDogs", { adoptableDogs });
-});
+router.route("/").get(requireAuth, adoptable_get);
 
 module.exports = router;

@@ -63,3 +63,9 @@ exports.login_post = async (req, res) => {
     res.status(401).json({ error: "Unknown login error" });
   }
 };
+
+exports.logout_get = (req, res) => {
+  let isLoggedIn = false;
+  res.cookie("jwt", "", { maxAge: 1 });
+  res.render("index", { isLoggedIn });
+};

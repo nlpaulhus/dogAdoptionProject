@@ -40,7 +40,7 @@
             .then(res => res.json())
             .then(res => {
               if (res.success) {
-                window.location.replace('/loggedIn');
+                window.location.replace('/');
               } else {
                 errorMessage.className = 'alert alert-danger';
                 errorMessage.style.margin='10px 0px';

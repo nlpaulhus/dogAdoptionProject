@@ -6,7 +6,8 @@ const { requireAuth } = require("../middlewares/authMiddleWare");
 router
   .route("/")
   .get(requireAuth, (req, res) => {
-    res.render("registerDog");
+    let isLoggedIn = true;
+    res.render("registerDog", { isLoggedIn });
   })
   .post(requireAuth, (req, res) => register_dog(req, res));
 

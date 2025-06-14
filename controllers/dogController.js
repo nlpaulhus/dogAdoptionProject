@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Dog = require("../models/dog");
 
 const handleErrors = (err) => {
@@ -12,21 +13,26 @@ const handleErrors = (err) => {
   return errors;
 };
 
-const register_dog = async (req, res) => {
+exports.register_dog = async (req, res) => {
   const { name, description } = req.body;
   const status = "adoptable";
 
   try {
     const newDog = await Dog.create({ name, description, status });
-    return res.render("adoptableDogs");
+    return res.redirect('/adoptableDogs');
   } catch (err) {
     const errors = handleErrors(err);
     console.log(errors);
-    return res.render("registerDog", {
-      nameError: errors.name,
-      descriptionError: errors.description,
-    });
+    return res.json({ errors });
   }
 };
 
-module.exports = { register_dog };
+exports.adoptable_get = async (req, res) => {
+  let isLoggedIn = true;
+  try {
+    const adoptableDogs = await Dog.find({ status: "adoptable" });
+    res.render("adoptableDogs", { adoptableDogs, isLoggedIn });
+  } catch (err) {
+    res.status(401).message("Error loading dogs");
+  }
+};
