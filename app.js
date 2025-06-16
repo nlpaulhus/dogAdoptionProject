@@ -50,13 +50,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 //ROUTES:
+app.use("/", home);
 app.use("/login", login);
 app.use("/logout", logout);
 app.use("/signup", signup);
 app.use("/registerDog", registerDog);
 app.use("/adoptableDogs", adoptableDogs);
 app.use("/adoptedDogs", adoptedDogs);
-app.use("/", home);
+
 
 app.use((req, res) => {
   res.render("404");

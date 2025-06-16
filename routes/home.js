@@ -13,7 +13,7 @@ router.route("/").get((req, res) => {
       }
     });
   } else {
-    res.render("loggedIn", { isLoggedIn: true });
+    res.render("index", { isLoggedIn: false });
   }
 });
 
