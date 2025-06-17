@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Dog = require("../models/dog");
 const jwt = require("jsonwebtoken");
 
+//Error handler function:
 const handleErrors = (err) => {
   let errors = { name: "", description: "" };
 
@@ -14,11 +15,13 @@ const handleErrors = (err) => {
   return errors;
 };
 
+//Helper function to get the currently logged in user's Id:
 const getCurrentUserId = (token) => {
   const decoded = jwt.verify(token, process.env.SESSION_SECRET);
   return decoded.id;
 };
 
+//Register a new dog:
 exports.register_dog = async (req, res) => {
   const { name, description } = req.body;
   const status = "adoptable";
@@ -29,11 +32,11 @@ exports.register_dog = async (req, res) => {
     return res.redirect("/adoptableDogs");
   } catch (err) {
     const errors = handleErrors(err);
-    console.log(errors);
-    return res.json({ errors });
+    res.status(401).json(errors);
   }
 };
 
+//Get adoptable dogs to populate Adoptable Dogs page:
 exports.adoptable_get = async (req, res) => {
   let isLoggedIn = res.locals.isLoggedIn;
   const userId = getCurrentUserId(req.cookies.jwt);
@@ -52,6 +55,7 @@ exports.adoptable_get = async (req, res) => {
     });
 };
 
+//Get adopted dogs to fill Adopted Dogs page:
 exports.adopted_get = async (req, res) => {
   let isLoggedIn = res.locals.isLoggedIn;
   try {
@@ -62,6 +66,7 @@ exports.adopted_get = async (req, res) => {
   }
 };
 
+//Delete a dog you registered:
 exports.dog_delete = async (req, res) => {
   const { dogId } = req.body;
   const currentUserId = getCurrentUserId(req.cookies.jwt);
@@ -81,6 +86,7 @@ exports.dog_delete = async (req, res) => {
   }
 };
 
+//Adoopt a dog you haven't registered:
 exports.adopt_patch = async (req, res) => {
   const { ownerMessage, dogId } = req.body;
 
@@ -98,6 +104,7 @@ exports.adopt_patch = async (req, res) => {
   res.end();
 };
 
+//Brings you to the leave message page and the final adopt button:
 exports.adopt_get = (req, res) => {
   const { dogId } = req.params;
   return res.render("adopt", { isLoggedIn: true, dogId: dogId });

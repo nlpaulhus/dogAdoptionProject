@@ -4,10 +4,12 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const maxAge = 24 * 60 * 60;
 
+//Helper function to create jwt token:
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.SESSION_SECRET, { expiresIn: maxAge });
 };
 
+//Helper function to create errors object:
 const handleErrors = (err) => {
   let errors = { email: "", password: "" };
 
@@ -25,6 +27,7 @@ const handleErrors = (err) => {
   return errors;
 };
 
+//Signup post:
 exports.signup_post = async (req, res) => {
   const { email, password } = req.body;
 
@@ -40,6 +43,7 @@ exports.signup_post = async (req, res) => {
   }
 };
 
+//Login post:
 exports.login_post = async (req, res) => {
   const { email, password } = req.body;
 
@@ -66,6 +70,7 @@ exports.login_post = async (req, res) => {
   }
 };
 
+//Logout get:
 exports.logout_get = (req, res) => {
   res.locals.isLoggedIn = false;
   res.cookie("jwt", "", { maxAge: 1 });

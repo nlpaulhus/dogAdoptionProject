@@ -4,11 +4,11 @@ const Schema = mongoose.Schema;
 const dogSchema = new Schema({
   name: {
     type: String,
-    required: [true, "Please enter the dog's name"],
+    required: [true, "Please enter the dog's name."],
   },
   description: {
     type: String,
-    required: [true, "Please enter a short description of the dog"],
+    required: [true, "Please enter a short description of the dog."],
   },
   owner: {
     type: String,
@@ -16,7 +16,7 @@ const dogSchema = new Schema({
   },
   status: {
     type: String,
-    required: [true],
+    required: true,
   },
   ownerMessage: {
     type: String,
