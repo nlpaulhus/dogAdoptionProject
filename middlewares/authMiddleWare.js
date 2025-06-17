@@ -31,4 +31,5 @@ const isLoggedIn = (req, res, next) => {
 };
 
 
-module.exports = { requireAuth, isLoggedIn };
+
+module.exports = { requireAuth, isLoggedIn};

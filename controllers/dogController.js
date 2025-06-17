@@ -14,19 +14,15 @@ const handleErrors = (err) => {
   return errors;
 };
 
+const getCurrentUserId = (token) => {
+  const decoded = jwt.verify(token, process.env.SESSION_SECRET);
+  return decoded.id;
+};
+
 exports.register_dog = async (req, res) => {
   const { name, description } = req.body;
   const status = "adoptable";
-  const token = req.cookies.jwt;
-  let owner = "";
-
-  if (token) {
-    jwt.verify(token, process.env.SESSION_SECRET, (err, decodedToken) => {
-      owner = decodedToken.id;
-    });
-  } else {
-    res.redirect("/login");
-  }
+  const owner = getCurrentUserId(req.cookies.jwt);
 
   try {
     const newDog = await Dog.create({ name, description, owner, status });
@@ -39,28 +35,21 @@ exports.register_dog = async (req, res) => {
 };
 
 exports.adoptable_get = async (req, res) => {
-  const token = req.cookies.jwt;
-  let userID = "";
   let isLoggedIn = res.locals.isLoggedIn;
+  const userId = getCurrentUserId(req.cookies.jwt);
 
-  try {
-    jwt.verify(token, process.env.SESSION_SECRET, (err, decodedToken) => {
-      if (err) {
-        console.log(err);
-      } else {
-        userId = decodedToken.id;
-      }
+  const adoptableDogs = await Dog.find({ status: "adoptable" })
+    .then((adoptableDogs) =>
+      res.render("adoptableDogs", {
+        adoptableDogs,
+        isLoggedIn,
+        userId,
+      })
+    )
+    .catch((err) => {
+      console.log(err);
+      res.end();
     });
-    const adoptableDogs = await Dog.find({ status: "adoptable" });
-    res.render("adoptableDogs", {
-      adoptableDogs,
-      isLoggedIn,
-      userId,
-    });
-  } catch (err) {
-    console.log(err);
-    res.end();
-  }
 };
 
 exports.adopted_get = async (req, res) => {
@@ -74,9 +63,8 @@ exports.adopted_get = async (req, res) => {
 };
 
 exports.dog_delete = async (req, res) => {
-  const token = req.cookies.jwt;
-  let currentUserId = "";
   const { dogId } = req.body;
+  const currentUserId = getCurrentUserId(req.cookies.jwt);
 
   const dog = await Dog.findById(dogId)
     .then((dog) => dog.toJSON())
@@ -85,26 +73,11 @@ exports.dog_delete = async (req, res) => {
   let ownerId = JSON.stringify(dog.owner);
   ownerId = ownerId.substring(1, ownerId.length - 1);
 
-  try {
-    jwt.verify(token, process.env.SESSION_SECRET, (err, decodedToken) => {
-      if (err) {
-        console.log(err);
-      } else {
-        currentUserId = decodedToken.id.toString();
-      }
-    });
-
-    if (
-      ownerId.toString() === currentUserId.toString() &&
-      dog.status === "adoptable"
-    ) {
-      const deletedDog = await Dog.findOneAndDelete({ _id: dogId });
-      res.end();
-    } else {
-      console.error("You cannot delete a dog you did not register.");
-    }
-  } catch (err) {
-    console.log(err);
+  if (ownerId === currentUserId && dog.status === "adoptable") {
+    const deletedDog = await Dog.findOneAndDelete({ _id: dogId });
+    res.end();
+  } else {
+    console.error("You cannot delete a dog you did not register.");
   }
 };
 
