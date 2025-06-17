@@ -94,7 +94,10 @@ exports.dog_delete = async (req, res) => {
       }
     });
 
-    if (ownerId.toString() === currentUserId.toString()) {
+    if (
+      ownerId.toString() === currentUserId.toString() &&
+      dog.status === "adoptable"
+    ) {
       const deletedDog = await Dog.findOneAndDelete({ _id: dogId });
       res.end();
     } else {
@@ -108,11 +111,17 @@ exports.dog_delete = async (req, res) => {
 exports.adopt_patch = async (req, res) => {
   const { ownerMessage, dogId } = req.body;
 
-  const doc = await Dog.findOneAndUpdate(
-    { _id: dogId },
-    { status: "adopted", ownerMessage: ownerMessage },
-    { new: true }
-  );
+  const dog = await Dog.findById(dogId).then((dog) => dog.toJSON());
+
+  if (dog.status === "adoptable") {
+    const doc = await Dog.findOneAndUpdate(
+      { _id: dogId },
+      { status: "adopted", ownerMessage: ownerMessage },
+      { new: true }
+    );
+  } else {
+    console.error("This dog is not adoptable");
+  }
   res.end();
 };
 
