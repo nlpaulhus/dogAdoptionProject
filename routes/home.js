@@ -1,19 +1,16 @@
 const express = require("express");
 let router = express.Router();
 const jwt = require("jsonwebtoken");
+const { isLoggedIn } = require("../middlewares/authMiddleWare");
 
-router.route("/").get((req, res) => {
+router.route("/").get(isLoggedIn, (req, res) => {
+  let isLoggedIn = res.locals.isLoggedIn;
   const token = req.cookies.jwt;
-  if (token) {
-    jwt.verify(token, process.env.SESSION_SECRET, (err, decodedToken) => {
-      if (err) {
-        res.render("index", { isLoggedIn: false });
-      } else {
-        res.render("loggedIn", { isLoggedIn: true });
-      }
-    });
+
+  if (isLoggedIn) {
+    res.render("loggedIn", { isLoggedIn });
   } else {
-    res.render("index", { isLoggedIn: false });
+    res.render("index", { isLoggedIn });
   }
 });
 

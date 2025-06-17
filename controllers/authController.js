@@ -69,5 +69,5 @@ exports.login_post = async (req, res) => {
 exports.logout_get = (req, res) => {
   res.locals.isLoggedIn = false;
   res.cookie("jwt", "", { maxAge: 1 });
-  res.render("index", { isLoggedIn });
+  res.redirect("/");
 };
