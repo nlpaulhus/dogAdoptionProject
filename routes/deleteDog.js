@@ -1,8 +1,9 @@
 const express = require("express");
 let router = express.Router();
 const { requireAuth } = require("../middlewares/authMiddleWare");
-const { adopted_get } = require("../controllers/dogController");
+const Dog = require("../models/dog");
+const { dog_delete } = require("../controllers/dogController");
 
-router.route("/").get(requireAuth, adopted_get);
+router.route("/").delete(requireAuth, dog_delete);
 
 module.exports = router;

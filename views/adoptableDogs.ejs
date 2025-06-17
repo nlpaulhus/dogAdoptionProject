@@ -1,27 +1,67 @@
 <%- include('partials/head') %>
-<%- include('partials/nav') %>
+  <%- include('partials/nav') %>
 
-<div class="container w=75 p-4">
+    <div id="wholePage" class="container w=75 p-4">
 
 
-    <h2 class="text-center">Adoptable Dogs</h2>
+      <h2 class="text-center">Adoptable Dogs</h2>
 
-    <% adoptableDogs.forEach((dog) => { %>
-    <div class="p-4">
-    <div class="card text-center">
-  <div class="card-header">
-    <%- dog.name %>
-  </div>
-  <div class="card-body">
-    <p class="card-text"><%- dog.description %></p>
-    <a href="#" class="btn btn-primary">Learn More</a>
-  </div>
-</div>
-</div>
-<% }); %>
+      <% adoptableDogs.forEach((dog)=> { %>
+        <div class="p-4">
+          <div class="card text-center">
+            <div class="card-header">
+              <%- dog.name %>
+            </div>
+            <div class="card-body">
+              <p class="card-text"><%- dog.description %></p>
+              <% if (dog.owner === userId) { %>
+              <button href="#" id=<%-dog._id%> class="btn btn-primary">Remove Dog</button>
+              <% } else { %>
+              <button href="#" id=<%-dog._id%> class="btn btn-primary">Adopt</button>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <% }); %>
 
-   
 
-</div>
+
+    </div>
 
     <%- include('partials/foot') %>
+
+    <script>
+
+      const page = document.getElementById('wholePage');
+
+      page.addEventListener("click", async (e) => {
+        const isButton = e.target.nodeName === 'BUTTON';
+        if (!isButton) {
+          return;
+        }
+
+  
+        if (e.target.innerHTML === "Adopt"){
+
+        const dogId = e.target.id;
+
+        window.location.replace(`/adopt/${dogId}`)
+      }
+
+      if (e.target.innerHTML === "Remove Dog"){
+        const dogId = e.target.id;
+
+        const res = await fetch('/delete', {
+          method: 'DELETE',
+          body: JSON.stringify({dogId}),
+          headers: {'Content-Type': 'application/json'}
+        })
+        .then(res=> window.location.replace('/adoptableDogs'))
+        .catch(err => console.log(err));
+      }
+
+      })
+      
+      
+
+    </script>

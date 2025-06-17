@@ -10,9 +10,16 @@ const dogSchema = new Schema({
     type: String,
     required: [true, "Please enter a short description of the dog"],
   },
+  owner: {
+    type: String,
+    required: true,
+  },
   status: {
     type: String,
     required: [true],
+  },
+  ownerMessage: {
+    type: String,
   },
 });
 

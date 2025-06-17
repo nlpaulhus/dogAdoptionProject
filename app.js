@@ -8,20 +8,7 @@ const app = express();
 
 const session = require("express-session");
 const ejs = require("ejs");
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
-    resave: false,
-  })
-);
-
-app.use((req, res, next) => {
-  res.locals.user = req.session.user;
-  delete req.session.user;
-  next();
-});
+const mongooseConnectDB = require("./db");
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
@@ -42,6 +29,8 @@ const registerDog = require("./routes/registerDog");
 const adoptableDogs = require("./routes/adoptableDogs");
 const adoptedDogs = require("./routes/adoptedDogs");
 const home = require("./routes/home");
+const adopt = require("./routes/adopt");
+const deleteDog = require("./routes/deleteDog")
 const { requireAuth } = require("./middlewares/authMiddleWare");
 
 //Middleware:
@@ -57,19 +46,16 @@ app.use("/signup", signup);
 app.use("/registerDog", registerDog);
 app.use("/adoptableDogs", adoptableDogs);
 app.use("/adoptedDogs", adoptedDogs);
-
+app.use("/adopt", adopt);
+app.use("/delete", deleteDog);
 
 app.use((req, res) => {
-  res.render("404");
+  res.render("404", { isLoggedIn: false });
 });
 
-//Connect to Mongoose:
-mongoose
-  .connect(process.env.dbURI)
-  .then((result) => console.log("Connected to database"))
-  .then((result) => {
-    app.listen(3000, () => {
-      console.log("Listening on port 3000");
-    });
-  })
-  .catch((err) => console.log(err));
+//Connect to Mongoose & server:
+mongooseConnectDB(process.env.dbURI);
+
+app.listen(3000, () => {
+  console.log("Listening on port 3000");
+});

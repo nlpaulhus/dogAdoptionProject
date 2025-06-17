@@ -6,10 +6,8 @@ const requireAuth = (req, res, next) => {
   if (token) {
     jwt.verify(token, process.env.SESSION_SECRET, (err, decodedToken) => {
       if (err) {
-        console.log(err.message);
         res.redirect("/login");
       } else {
-        req.isLoggedIn = true;
         next();
       }
     });
@@ -23,13 +21,14 @@ const isLoggedIn = (req, res, next) => {
   if (token) {
     jwt.verify(token, process.env.SESSION_SECRET, (err, decodedToken) => {
       if (err) {
-        return false;
+        res.locals.isLoggedIn = false;
       } else {
-        return true;
+        res.locals.isLoggedIn = true;
       }
     });
   }
   next();
 };
+
 
 module.exports = { requireAuth, isLoggedIn };

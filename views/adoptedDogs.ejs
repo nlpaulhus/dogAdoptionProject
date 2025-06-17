@@ -13,7 +13,9 @@
   </div>
   <div class="card-body">
     <p class="card-text"><%- dog.description %></p>
-    <a href="#" class="btn btn-primary">Learn More</a>
+    <% if (dog.ownerMessage) { %>
+    <p class="card-text"><b>Message from new owner: </b><br><%- dog.ownerMessage %></p>
+    <% } %>
   </div>
 </div>
 </div>

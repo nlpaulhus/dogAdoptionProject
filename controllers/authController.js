@@ -32,6 +32,7 @@ exports.signup_post = async (req, res) => {
     const user = await User.create({ email, password });
     const token = createToken(user._id);
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.locals.isLoggedIn = true;
     res.status(201).json({ success: "Success" });
   } catch (err) {
     const errors = handleErrors(err);
@@ -56,6 +57,7 @@ exports.login_post = async (req, res) => {
     } else {
       const token = createToken(user._id);
       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+      res.locals.isLoggedIn = true;
       res.status(201).json({ success: "Success" });
     }
   } catch (err) {
@@ -65,7 +67,7 @@ exports.login_post = async (req, res) => {
 };
 
 exports.logout_get = (req, res) => {
-  let isLoggedIn = false;
+  res.locals.isLoggedIn = false;
   res.cookie("jwt", "", { maxAge: 1 });
   res.render("index", { isLoggedIn });
 };
