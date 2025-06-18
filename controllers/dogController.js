@@ -52,6 +52,7 @@ exports.adoptable_get = async (req, res) => {
         adoptableDogs,
         isLoggedIn,
         userId,
+        page,
       })
     )
     .catch((err) => {
@@ -70,7 +71,7 @@ exports.adopted_get = async (req, res) => {
     const adoptedDogs = await Dog.find({ status: "adopted" })
       .skip((page - 1) * dogsPerPage)
       .limit(dogsPerPage);
-    res.render("adoptedDogs", { adoptedDogs, isLoggedIn });
+    res.render("adoptedDogs", { adoptedDogs, isLoggedIn, page });
   } catch (err) {
     res.status(401).message("Error connecting to database");
   }
@@ -96,14 +97,14 @@ exports.dog_delete = async (req, res) => {
   }
 };
 
-//Adoopt a dog you haven't registered:
+//Adopt a dog you haven't registered:
 exports.adopt_patch = async (req, res) => {
   const { ownerMessage, dogId } = req.body;
   const newOwnerId = getCurrentUserId(req.cookies.jwt);
 
   const dog = await Dog.findById(dogId).then((dog) => dog.toJSON());
 
-  if (dog.status === "adoptable") {
+  if (dog.status === "adoptable" && dog.owner !== newOwnerId) {
     const doc = await Dog.findOneAndUpdate(
       { _id: dogId },
       { status: "adopted", newOwnerId: newOwnerId, ownerMessage: ownerMessage },

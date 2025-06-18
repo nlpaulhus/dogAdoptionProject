@@ -56,8 +56,8 @@ app.use("/adopt", adopt);
 app.use("/delete", deleteDog);
 app.use("/yourDogs", yourDogs);
 
-app.use((req, res) => {
-  res.render("404", { isLoggedIn: false });
+app.use((req, res, next) => {
+  res.status(404).render("404", { isLoggedIn: false });
 });
 
 //Connect to Mongoose & server:
