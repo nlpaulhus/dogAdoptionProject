@@ -22,14 +22,14 @@ const getCurrentUserId = (token) => {
 };
 
 //Register a new dog:
-exports.register_dog = async (req, res) => {
+exports.registerdog_post = async (req, res) => {
   const { name, description } = req.body;
   const status = "adoptable";
   const owner = getCurrentUserId(req.cookies.jwt);
 
   try {
     const newDog = await Dog.create({ name, description, owner, status });
-    return res.redirect("/adoptableDogs");
+    return res.status(201).send({ success: "success" });
   } catch (err) {
     const errors = handleErrors(err);
     res.status(401).json(errors);
@@ -40,8 +40,13 @@ exports.register_dog = async (req, res) => {
 exports.adoptable_get = async (req, res) => {
   let isLoggedIn = res.locals.isLoggedIn;
   const userId = getCurrentUserId(req.cookies.jwt);
+  let { page } = req.params;
+  const dogsPerPage = 10;
+  page = parseInt(page);
 
   const adoptableDogs = await Dog.find({ status: "adoptable" })
+    .skip((page - 1) * dogsPerPage)
+    .limit(dogsPerPage)
     .then((adoptableDogs) =>
       res.render("adoptableDogs", {
         adoptableDogs,
@@ -51,18 +56,23 @@ exports.adoptable_get = async (req, res) => {
     )
     .catch((err) => {
       console.log(err);
-      res.end();
+      res.status(401).json("Error connecting to database.");
     });
 };
 
 //Get adopted dogs to fill Adopted Dogs page:
 exports.adopted_get = async (req, res) => {
   let isLoggedIn = res.locals.isLoggedIn;
+  let { page } = req.params;
+  const dogsPerPage = 10;
+  page = parseInt(page);
   try {
-    const adoptedDogs = await Dog.find({ status: "adopted" });
+    const adoptedDogs = await Dog.find({ status: "adopted" })
+      .skip((page - 1) * dogsPerPage)
+      .limit(dogsPerPage);
     res.render("adoptedDogs", { adoptedDogs, isLoggedIn });
   } catch (err) {
-    res.status(401).message("Error loading dogs");
+    res.status(401).message("Error connecting to database");
   }
 };
 
@@ -80,28 +90,29 @@ exports.dog_delete = async (req, res) => {
 
   if (ownerId === currentUserId && dog.status === "adoptable") {
     const deletedDog = await Dog.findOneAndDelete({ _id: dogId });
-    res.end();
+    res.status(201).json("Dog has been deleted.");
   } else {
-    console.error("You cannot delete a dog you did not register.");
+    res.status(401).json("Error deleting dog from database.");
   }
 };
 
 //Adoopt a dog you haven't registered:
 exports.adopt_patch = async (req, res) => {
   const { ownerMessage, dogId } = req.body;
+  const newOwnerId = getCurrentUserId(req.cookies.jwt);
 
   const dog = await Dog.findById(dogId).then((dog) => dog.toJSON());
 
   if (dog.status === "adoptable") {
     const doc = await Dog.findOneAndUpdate(
       { _id: dogId },
-      { status: "adopted", ownerMessage: ownerMessage },
+      { status: "adopted", newOwnerId: newOwnerId, ownerMessage: ownerMessage },
       { new: true }
     );
   } else {
     console.error("This dog is not adoptable");
   }
-  res.end();
+  res.status(201).json("Dog successfully adopted.");
 };
 
 //Brings you to the leave message page and the final adopt button:
@@ -109,3 +120,31 @@ exports.adopt_get = (req, res) => {
   const { dogId } = req.params;
   return res.render("adopt", { isLoggedIn: true, dogId: dogId });
 };
+
+exports.yourdogs_get = async (req, res) => {
+  let { page } = req.params;
+  let isLoggedIn = res.locals.isLoggedIn;
+  const userId = getCurrentUserId(req.cookies.jwt);
+  const dogsPerPage = 10;
+  page = parseInt(page);
+
+  const yourDogs = await Dog.find({
+    $or: [{ owner: userId }, { newOwnerId: userId }],
+  })
+    .skip((page - 1) * dogsPerPage)
+    .limit(dogsPerPage)
+    .then((yourDogs) =>
+      res.render("yourDogs", {
+        yourDogs,
+        isLoggedIn,
+      })
+    )
+    .catch((err) => {
+      console.log(err);
+      res.status(401).json("Error connecting to database.");
+    });
+};
+
+exports.yourdogs_adoptable_get = (req, res) => {};
+
+exports.yourdogs_adopted_get = (req, res) => {};

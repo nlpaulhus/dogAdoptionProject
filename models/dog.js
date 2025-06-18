@@ -18,6 +18,9 @@ const dogSchema = new Schema({
     type: String,
     required: true,
   },
+  newOwnerId: {
+    type: String,
+  },
   ownerMessage: {
     type: String,
   },

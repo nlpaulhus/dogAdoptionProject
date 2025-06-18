@@ -5,12 +5,10 @@ const env = require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const express = require("express");
 const app = express();
-
 const session = require("express-session");
 const ejs = require("ejs");
 const mongooseConnectDB = require("./db");
 
-app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -30,13 +28,21 @@ const adoptableDogs = require("./routes/adoptableDogs");
 const adoptedDogs = require("./routes/adoptedDogs");
 const home = require("./routes/home");
 const adopt = require("./routes/adopt");
-const deleteDog = require("./routes/deleteDog")
-const { requireAuth } = require("./middlewares/authMiddleWare");
+const deleteDog = require("./routes/deleteDog");
+const yourDogs = require("./routes/yourDogs");
 
 //Middleware:
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false,
+    resave: false,
+  })
+);
 
 //ROUTES:
 app.use("/", home);
@@ -48,6 +54,7 @@ app.use("/adoptableDogs", adoptableDogs);
 app.use("/adoptedDogs", adoptedDogs);
 app.use("/adopt", adopt);
 app.use("/delete", deleteDog);
+app.use("/yourDogs", yourDogs);
 
 app.use((req, res) => {
   res.render("404", { isLoggedIn: false });

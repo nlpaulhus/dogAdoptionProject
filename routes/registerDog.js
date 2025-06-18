@@ -1,6 +1,6 @@
 const express = require("express");
 let router = express.Router();
-let { register_dog } = require("../controllers/dogController");
+let { registerdog_post } = require("../controllers/dogController");
 const { requireAuth, isLoggedIn } = require("../middlewares/authMiddleWare");
 
 router
@@ -9,6 +9,6 @@ router
     let isLoggedIn = res.locals.isLoggedIn;
     res.render("registerDog", { isLoggedIn });
   })
-  .post(requireAuth, (req, res) => register_dog(req, res));
+  .post(requireAuth, isLoggedIn, (req, res) => registerdog_post(req, res));
 
 module.exports = router;

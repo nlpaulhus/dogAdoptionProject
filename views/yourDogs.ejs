@@ -4,9 +4,9 @@
     <div id="wholePage" class="container w=75 p-4">
 
 
-      <h2 class="text-center">Adoptable Dogs</h2>
+      <h2 class="text-center">Your Dogs</h2>
 
-       <div class="m-4">
+    <div class="m-4">
   <ul class="pagination justify-content-center">
     <li class="page-item"><a class="page-link inactive" >Previous</a></li>
     <li class="page-item"><a class="page-link" href="2">2</a></li>
@@ -16,7 +16,7 @@
   </ul>
 </div>
 
-      <% adoptableDogs.forEach((dog)=> { %>
+      <% yourDogs.forEach((dog)=> { %>
         <div class="p-4">
           <div class="card text-center">
             <div class="card-header">
@@ -24,10 +24,10 @@
             </div>
             <div class="card-body">
               <p class="card-text"><%- dog.description %></p>
-              <% if (dog.owner === userId) { %>
+              <% if (dog.status === "adoptable") { %>
               <button href="#" id=<%-dog._id%> class="btn btn-primary">Remove Dog</button>
               <% } else { %>
-              <button href="#" id=<%-dog._id%> class="btn btn-primary">Adopt</button>
+             <p class="card-text"><b>Message from new owner: </b><br><%- dog.ownerMessage %></p>
               <% } %>
             </div>
           </div>
@@ -42,8 +42,9 @@
 
     <script>
 
-      const page = document.getElementById('wholePage');
+      //Pagination:
 
+      const page = document.getElementById('wholePage');
       const pageLinks = document.getElementsByClassName('page-link');
 
           window.addEventListener('load', (e) => {
@@ -65,19 +66,13 @@
 
       })
 
+      //Enable remove buttons:
+
       page.addEventListener("click", async (e) => {
         const isButton = e.target.nodeName === 'BUTTON';
         if (!isButton) {
           return;
         }
-
-  
-        if (e.target.innerHTML === "Adopt"){
-
-        const dogId = e.target.id;
-
-        window.location.replace(`/adopt/${dogId}`)
-      }
 
       if (e.target.innerHTML === "Remove Dog"){
         const dogId = e.target.id;
@@ -87,12 +82,14 @@
           body: JSON.stringify({dogId}),
           headers: {'Content-Type': 'application/json'}
         })
-        .then(res=> window.location.replace('/adoptableDogs/1'))
+        .then(res=> window.location.replace('/yourDogs/1'))
         .catch(err => console.log(err));
       }
 
       })
       
-      
+   
+  
+
 
     </script>

@@ -5,6 +5,16 @@
 
     <h2 class="text-center">Adopted Dogs</h2>
 
+       <div class="m-4">
+  <ul class="pagination justify-content-center">
+    <li class="page-item"><a class="page-link inactive" >Previous</a></li>
+    <li class="page-item"><a class="page-link" href="2">2</a></li>
+    <li class="page-item"><a class="page-link" href="3">3</a></li>
+    <li class="page-item"><a class="page-link" href="4" >4</a></li>
+    <li class="page-item"><a class="page-link">Next</a></li>
+  </ul>
+</div>
+
     <% adoptedDogs.forEach((dog) => { %>
     <div class="p-4">
     <div class="card text-center">
@@ -26,3 +36,26 @@
 </div>
 
     <%- include('partials/foot') %>
+
+    <script>
+      const pageLinks = document.getElementsByClassName('page-link');
+
+          window.addEventListener('load', (e) => {
+            const currentUrl = window.location.href;
+            const split = currentUrl.split("Dogs/");
+            const currentPage = split[1];
+            const currentPageInt = parseInt(currentPage);
+
+            if(currentPageInt > 1) {
+          pageLinks[0].href = (currentPageInt - 1).toString();
+           pageLinks[1].innerHTML = (currentPageInt + 1).toString();
+          pageLinks[1].href = (currentPageInt + 1).toString();
+           pageLinks[2].innerHTML = (currentPageInt + 2).toString();
+           pageLinks[2].href=(currentPageInt + 2).toString();
+           pageLinks[3].innerHTML = (currentPageInt + 3).toString();
+           pageLinks[3].href = (currentPageInt + 3).toString();
+           pageLinks[4].href = (currentPageInt + 4).toString();
+            }
+
+      })
+    </script>

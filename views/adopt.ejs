@@ -33,7 +33,7 @@
           body: JSON.stringify({ownerMessage, dogId}),
           headers: { 'Content-Type': 'application/json' }
         })
-        .then((res) => window.location.replace("/adoptedDogs"))
+        .then((res) => window.location.replace("/adoptedDogs/1"))
         .catch(err => console.log(err));
       })
   
