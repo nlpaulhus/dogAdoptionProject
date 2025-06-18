@@ -137,6 +137,7 @@ exports.yourdogs_get = async (req, res) => {
       res.render("yourDogs", {
         yourDogs,
         isLoggedIn,
+        page,
       })
     )
     .catch((err) => {
@@ -145,6 +146,58 @@ exports.yourdogs_get = async (req, res) => {
     });
 };
 
-exports.yourdogs_adoptable_get = (req, res) => {};
+exports.yourdogs_adoptable_get = async (req, res) => {
+  let { page } = req.params;
+  let isLoggedIn = res.locals.isLoggedIn;
+  const userId = getCurrentUserId(req.cookies.jwt);
+  const dogsPerPage = 10;
+  page = parseInt(page);
 
-exports.yourdogs_adopted_get = (req, res) => {};
+  const yourDogs = await Dog.find({
+    $and: [
+      { status: "adoptable" },
+      { $or: [{ owner: userId }, { newOwnerId: userId }] },
+    ],
+  })
+    .skip((page - 1) * dogsPerPage)
+    .limit(dogsPerPage)
+    .then((yourDogs) =>
+      res.render("yourDogs", {
+        yourDogs,
+        isLoggedIn,
+        page,
+      })
+    )
+    .catch((err) => {
+      console.log(err);
+      res.status(401).json("Error connecting to database.");
+    });
+};
+
+exports.yourdogs_adopted_get = async (req, res) => {
+  let { page } = req.params;
+  let isLoggedIn = res.locals.isLoggedIn;
+  const userId = getCurrentUserId(req.cookies.jwt);
+  const dogsPerPage = 10;
+  page = parseInt(page);
+
+  const yourDogs = await Dog.find({
+    $and: [
+      { status: "adopted" },
+      { $or: [{ owner: userId }, { newOwnerId: userId }] },
+    ],
+  })
+    .skip((page - 1) * dogsPerPage)
+    .limit(dogsPerPage)
+    .then((yourDogs) =>
+      res.render("yourDogs", {
+        yourDogs,
+        isLoggedIn,
+        page,
+      })
+    )
+    .catch((err) => {
+      console.log(err);
+      res.status(401).json("Error connecting to database.");
+    });
+};
