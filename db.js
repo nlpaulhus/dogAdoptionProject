@@ -1,10 +1,9 @@
-const mongoose = require("mongoose");
+import { connect } from "mongoose";
 
 function mongooseConnectDB(uri) {
-  mongoose
-    .connect(uri)
+  connect(uri)
     .then((result) => console.log("Connected to database"))
     .catch((err) => console.log(err));
 }
 
-module.exports = mongooseConnectDB;
+export default mongooseConnectDB;

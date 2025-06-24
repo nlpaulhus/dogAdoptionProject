@@ -1,11 +1,11 @@
-const express = require("express");
-let router = express.Router();
-const { requireAuth, isLoggedIn } = require("../middlewares/authMiddleWare");
-const Dog = require("../models/dog");
-const { adopt_patch, adopt_get } = require("../controllers/dogController");
+import { Router } from "express";
+let router = Router();
+import requireAuth from "../middlewares/requireAuth.js";
+import isLoggedIn from "../middlewares/isLoggedIn.js"
+import { adopt_patch, adopt_get } from "../controllers/dogController.js";
 
 router
   .put("/", requireAuth, isLoggedIn, adopt_patch)
   .get("/:dogId", requireAuth, isLoggedIn, adopt_get);
 
-module.exports = router;
+export default router;

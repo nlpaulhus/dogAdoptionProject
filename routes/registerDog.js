@@ -1,7 +1,8 @@
-const express = require("express");
-let router = express.Router();
-let { registerdog_post } = require("../controllers/dogController");
-const { requireAuth, isLoggedIn } = require("../middlewares/authMiddleWare");
+import { Router } from "express";
+let router = Router();
+import { registerdog_post } from "../controllers/dogController.js";
+import requireAuth from "../middlewares/requireAuth.js";
+import isLoggedIn from "../middlewares/isLoggedIn.js"
 
 router
   .route("/")
@@ -11,4 +12,4 @@ router
   })
   .post(requireAuth, isLoggedIn, (req, res) => registerdog_post(req, res));
 
-module.exports = router;
+export default router;

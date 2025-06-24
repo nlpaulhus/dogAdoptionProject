@@ -1,7 +1,8 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const { isEmail } = require("validator");
-const bcrypt = require("bcrypt");
+import mongoose from "mongoose";
+const { Schema } = mongoose;
+import pkg from "validator";
+const { isEmail } = pkg;
+import { genSalt, hash } from "bcrypt";
 
 const userSchema = new Schema({
   email: {
@@ -19,12 +20,12 @@ const userSchema = new Schema({
 });
 
 userSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSalt();
-  this.password = await bcrypt.hash(this.password, salt);
+  const salt = await genSalt();
+  this.password = await hash(this.password, salt);
   this.email = this.email.toLowerCase();
   next();
 });
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+export default User;

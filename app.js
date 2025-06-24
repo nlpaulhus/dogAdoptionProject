@@ -1,41 +1,43 @@
 //Import the dotenv file
-const env = require("dotenv").config({
+
+import dotenv from "dotenv";
+dotenv.config({
   path: process.cwd() + `/.env.${process.env.NODE_ENV}`,
 });
 
 //Express app:
-const cookieParser = require("cookie-parser");
-const express = require("express");
+import cookieParser from "cookie-parser";
+import express, { json, urlencoded } from "express";
 const app = express();
-const session = require("express-session");
-const ejs = require("ejs");
-const mongooseConnectDB = require("./db");
+import session from "express-session";
+import ejs from "ejs";
+import mongooseConnectDB from "./db.js";
 
 app.set("view engine", "ejs");
 app.set("views", "views");
 
 //Import mongoose:
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 //Import & apply cors:
-const cors = require("cors");
+import cors from "cors";
 app.use(cors());
 
 //Import routes:
-const login = require("./routes/login");
-const logout = require("./routes/logout");
-const signup = require("./routes/signup");
-const registerDog = require("./routes/registerDog");
-const adoptableDogs = require("./routes/adoptableDogs");
-const adoptedDogs = require("./routes/adoptedDogs");
-const home = require("./routes/home");
-const adopt = require("./routes/adopt");
-const deleteDog = require("./routes/deleteDog");
-const yourDogs = require("./routes/yourDogs");
+import login from "./routes/login.js";
+import logout from "./routes/logout.js";
+import signup from "./routes/signup.js";
+import registerDog from "./routes/registerDog.js";
+import adoptableDogs from "./routes/adoptableDogs.js";
+import adoptedDogs from "./routes/adoptedDogs.js";
+import home from "./routes/home.js";
+import adopt from "./routes/adopt.js";
+import deleteDog from "./routes/deleteDog.js";
+import yourDogs from "./routes/yourDogs.js";
 
 //Middleware:
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(json());
+app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(

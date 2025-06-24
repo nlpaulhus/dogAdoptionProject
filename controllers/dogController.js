@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
-const Dog = require("../models/dog");
-const jwt = require("jsonwebtoken");
+import Dog from "../models/dog.js";
+import verify from "jsonwebtoken";
 
 //Error handler function:
 const handleErrors = (err) => {
@@ -17,12 +16,12 @@ const handleErrors = (err) => {
 
 //Helper function to get the currently logged in user's Id:
 const getCurrentUserId = (token) => {
-  const decoded = jwt.verify(token, process.env.SESSION_SECRET);
+  const decoded = verify(token, process.env.SESSION_SECRET);
   return decoded.id;
 };
 
 //Register a new dog:
-exports.registerdog_post = async (req, res) => {
+export async function registerdog_post(req, res) {
   const { name, description } = req.body;
   const status = "adoptable";
   const owner = getCurrentUserId(req.cookies.jwt);
@@ -34,10 +33,10 @@ exports.registerdog_post = async (req, res) => {
     const errors = handleErrors(err);
     res.status(401).json(errors);
   }
-};
+}
 
 //Get adoptable dogs to populate Adoptable Dogs page:
-exports.adoptable_get = async (req, res) => {
+export async function adoptable_get(req, res) {
   let isLoggedIn = res.locals.isLoggedIn;
   const userId = getCurrentUserId(req.cookies.jwt);
   let { page } = req.params;
@@ -59,10 +58,10 @@ exports.adoptable_get = async (req, res) => {
       console.log(err);
       res.status(401).json("Error connecting to database.");
     });
-};
+}
 
 //Get adopted dogs to fill Adopted Dogs page:
-exports.adopted_get = async (req, res) => {
+export async function adopted_get(req, res) {
   let isLoggedIn = res.locals.isLoggedIn;
   let { page } = req.params;
   const dogsPerPage = 10;
@@ -75,10 +74,10 @@ exports.adopted_get = async (req, res) => {
   } catch (err) {
     res.status(401).message("Error connecting to database");
   }
-};
+}
 
 //Delete a dog you registered:
-exports.dog_delete = async (req, res) => {
+export async function dog_delete(req, res) {
   const { dogId } = req.body;
   const currentUserId = getCurrentUserId(req.cookies.jwt);
 
@@ -95,10 +94,10 @@ exports.dog_delete = async (req, res) => {
   } else {
     res.status(401).json("Error deleting dog from database.");
   }
-};
+}
 
 //Adopt a dog you haven't registered:
-exports.adopt_patch = async (req, res) => {
+export async function adopt_patch(req, res) {
   const { ownerMessage, dogId } = req.body;
   const newOwnerId = getCurrentUserId(req.cookies.jwt);
 
@@ -114,15 +113,15 @@ exports.adopt_patch = async (req, res) => {
     console.error("This dog is not adoptable");
   }
   res.status(201).json("Dog successfully adopted.");
-};
+}
 
 //Brings you to the leave message page and the final adopt button:
-exports.adopt_get = (req, res) => {
+export function adopt_get(req, res) {
   const { dogId } = req.params;
   return res.render("adopt", { isLoggedIn: true, dogId: dogId });
-};
+}
 
-exports.yourdogs_get = async (req, res) => {
+export async function yourdogs_get(req, res) {
   let { page } = req.params;
   let isLoggedIn = res.locals.isLoggedIn;
   const userId = getCurrentUserId(req.cookies.jwt);
@@ -145,9 +144,9 @@ exports.yourdogs_get = async (req, res) => {
       console.log(err);
       res.status(401).json("Error connecting to database.");
     });
-};
+}
 
-exports.yourdogs_adoptable_get = async (req, res) => {
+export async function yourdogs_adoptable_get(req, res) {
   let { page } = req.params;
   let isLoggedIn = res.locals.isLoggedIn;
   const userId = getCurrentUserId(req.cookies.jwt);
@@ -173,9 +172,9 @@ exports.yourdogs_adoptable_get = async (req, res) => {
       console.log(err);
       res.status(401).json("Error connecting to database.");
     });
-};
+}
 
-exports.yourdogs_adopted_get = async (req, res) => {
+export async function yourdogs_adopted_get(req, res) {
   let { page } = req.params;
   let isLoggedIn = res.locals.isLoggedIn;
   const userId = getCurrentUserId(req.cookies.jwt);
@@ -201,4 +200,4 @@ exports.yourdogs_adopted_get = async (req, res) => {
       console.log(err);
       res.status(401).json("Error connecting to database.");
     });
-};
+}

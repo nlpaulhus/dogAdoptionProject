@@ -1,7 +1,6 @@
-const express = require("express");
-let router = express.Router();
-const jwt = require("jsonwebtoken");
-const { isLoggedIn } = require("../middlewares/authMiddleWare");
+import { Router } from "express";
+let router = Router();
+import isLoggedIn from "../middlewares/isLoggedIn.js"
 
 router.route("/").get(isLoggedIn, (req, res) => {
   let isLoggedIn = res.locals.isLoggedIn;
@@ -14,4 +13,4 @@ router.route("/").get(isLoggedIn, (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

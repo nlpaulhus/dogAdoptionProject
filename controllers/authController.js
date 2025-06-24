@@ -1,12 +1,11 @@
-const mongoose = require("mongoose");
-const User = require("../models/user");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+import  User from "../models/user.js";
+import { compare } from "bcrypt";
+import sign from "jsonwebtoken";
 const maxAge = 24 * 60 * 60;
 
 //Helper function to create jwt token:
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.SESSION_SECRET, { expiresIn: maxAge });
+  return sign({ id }, process.env.SESSION_SECRET, { expiresIn: maxAge });
 };
 
 //Helper function to create errors object:
@@ -28,7 +27,7 @@ const handleErrors = (err) => {
 };
 
 //Signup post:
-exports.signup_post = async (req, res) => {
+export async function signup_post(req, res) {
   const { email, password } = req.body;
 
   try {
@@ -41,10 +40,10 @@ exports.signup_post = async (req, res) => {
     const errors = handleErrors(err);
     res.status(401).json(errors);
   }
-};
+}
 
 //Login post:
-exports.login_post = async (req, res) => {
+export async function login_post(req, res) {
   const { email, password } = req.body;
 
   try {
@@ -56,7 +55,7 @@ exports.login_post = async (req, res) => {
     }
 
     //checking password
-    const auth = await bcrypt.compare(password, user.password);
+    const auth = await compare(password, user.password);
     if (auth === false) {
       return res.status(401).json({ error: "Incorrect password" });
     } else {
@@ -69,11 +68,11 @@ exports.login_post = async (req, res) => {
     console.log(err);
     res.status(401).json({ error: "Unknown login error" });
   }
-};
+}
 
 //Logout get:
-exports.logout_get = (req, res) => {
+export function logout_get(req, res) {
   res.locals.isLoggedIn = false;
   res.cookie("jwt", "", { maxAge: 1 });
   res.redirect("/");
-};
+}

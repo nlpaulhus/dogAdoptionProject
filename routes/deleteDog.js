@@ -1,8 +1,8 @@
-const express = require("express");
-let router = express.Router();
-const { requireAuth } = require("../middlewares/authMiddleWare");
-const { dog_delete } = require("../controllers/dogController");
+import { Router } from "express";
+let router = Router();
+import requireAuth from "../middlewares/requireAuth.js";
+import { dog_delete } from "../controllers/dogController.js";
 
 router.route("/").delete(requireAuth, dog_delete);
 
-module.exports = router;
+export default router;
