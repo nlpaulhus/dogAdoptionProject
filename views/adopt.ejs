@@ -1,41 +1,48 @@
-<%- include('partials/head') %>
-  <%- include('partials/nav') %>
+<%- include('partials/head') %> <%- include('partials/nav') %>
 
-    <div  class="container mx-auto p-5 m-5 w-50">
-      <h4 class="text-center p-4">Leave a message for the prior owner:</h4>
-      <form action="/adopt" method="POST" id="adoptDogForm" enctype="application/x-www-form-urlencoded">
-        <div class="mb-3">
-          <textarea rows="3" name="ownerThankYou" class="form-control" id="ownerThankYou"></textarea>
-        </div>
-        <div class="col text-center">
-          <button type="submit" class="btn btn-primary">Adopt</button>
-        </div>
-      </form>
+<div class="container mx-auto p-5 m-5 w-50">
+  <h4 class="text-center p-4">Leave a message for the prior owner:</h4>
+  <form
+    action="/adopt"
+    method="POST"
+    id="adoptDogForm"
+    enctype="application/x-www-form-urlencoded"
+  >
+    <div class="mb-3">
+      <textarea
+        rows="3"
+        name="ownerThankYou"
+        class="form-control"
+        id="ownerThankYou"
+      ></textarea>
     </div>
+    <div class="col text-center">
+      <button type="submit" class="btn btn-primary">Adopt</button>
+    </div>
+  </form>
+</div>
 
-    <%- include('partials/foot') %>
+<%- include('partials/foot') %>
 
-    <script>
-      const finalAdoptionForm = document.getElementById('adoptDogForm');
+<script>
+  const finalAdoptionForm = document.getElementById("adoptDogForm");
 
-      finalAdoptionForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+  finalAdoptionForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        const ownerMessage = finalAdoptionForm.ownerThankYou.value;
-        
-        const currentUrl = window.location.href;
-        const splitUrl = currentUrl.split("adopt/");
-        const dogId = splitUrl[1];
-        console.log(dogId);
+    const ownerMessage = finalAdoptionForm.ownerThankYou.value;
 
-          const res = await fetch('/adopt', {
-          method: 'PUT',
-          body: JSON.stringify({ownerMessage, dogId}),
-          headers: { 'Content-Type': 'application/json' }
-        })
-        .then((res) => window.location.replace("/adoptedDogs/1"))
-        .catch(err => console.log(err));
-      })
-  
+    const currentUrl = window.location.href;
+    const splitUrl = currentUrl.split("adopt/");
+    const dogId = splitUrl[1];
+    console.log(dogId);
 
-    </script>
+    const res = await fetch("/adopt", {
+      method: "PUT",
+      body: JSON.stringify({ ownerMessage, dogId }),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => window.location.replace("/adoptedDogs/1"))
+      .catch((err) => console.log(err));
+  });
+</script>

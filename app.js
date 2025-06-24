@@ -1,5 +1,7 @@
 //Import the dotenv file
-const env = require("dotenv").config();
+const env = require("dotenv").config({
+  path: process.cwd() + `/.env.${process.env.NODE_ENV}`,
+});
 
 //Express app:
 const cookieParser = require("cookie-parser");

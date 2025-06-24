@@ -1,55 +1,64 @@
-<%- include('partials/head') %>
-  <%- include('partials/nav') %>
+<%- include('partials/head') %> <%- include('partials/nav') %>
 
-    <div class="container mx-auto p-5 m-5 w-50">
-      <h4 class="text-center p-4">Login:</h4>
-      <form id="loginForm" action="/login" method="POST">
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Email address</label>
-          <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-        </div>
-        <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">Password</label>
-          <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-        </div>
-        <div class="col text-center">
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </div>
-    </form>
-      <p class="text-center p-4">Don't have an account? <br>Create one <a href="/signup">here.</a></p>
-   <div id="loginError"></div>
+<div class="container mx-auto p-5 m-5 w-50">
+  <h4 class="text-center p-4">Login:</h4>
+  <form id="loginForm" action="/login" method="POST">
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Email address</label>
+      <input
+        type="email"
+        name="email"
+        class="form-control"
+        id="exampleInputEmail1"
+        aria-describedby="emailHelp"
+      />
     </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Password</label>
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        id="exampleInputPassword1"
+      />
+    </div>
+    <div class="col text-center">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+  <p class="text-center p-4">
+    Don't have an account? <br />Create one <a href="/signup">here.</a>
+  </p>
+  <div id="loginError"></div>
+</div>
 
-    <%- include('partials/foot') %>
+<%- include('partials/foot') %>
 
-      <script>
+<script>
+  const loginForm = document.getElementById("loginForm");
+  const errorMessage = document.getElementById("loginError");
 
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        const loginForm = document.getElementById('loginForm');
-        const errorMessage = document.getElementById('loginError');
+    const email = loginForm.email.value;
+    const password = loginForm.password.value;
 
-        loginForm.addEventListener('submit', async (e) => {
-          e.preventDefault();
-
-          const email = loginForm.email.value;
-          const password = loginForm.password.value;
-
-            const res = await fetch('/login', {
-              method: 'POST',
-              body: JSON.stringify({ email, password }),
-              headers: { 'Content-Type': 'application/json' }
-            })
-            .then(res => res.json())
-            .then(res => {
-              if (res.success) {
-                window.location.replace('/');
-              } else {
-                errorMessage.className = 'alert alert-danger';
-                errorMessage.style.margin='10px 0px';
-                errorMessage.innerHTML = res.error;
-              }
-            })
-          .catch (err => console.log(err));
-        });
-
-      </script>
+    const res = await fetch("/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          window.location.replace("/");
+        } else {
+          errorMessage.className = "alert alert-danger";
+          errorMessage.style.margin = "10px 0px";
+          errorMessage.innerHTML = res.error;
+        }
+      })
+      .catch((err) => console.log(err));
+  });
+</script>

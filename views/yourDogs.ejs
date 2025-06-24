@@ -1,84 +1,90 @@
-<%- include('partials/head') %>
-  <%- include('partials/nav') %>
+<%- include('partials/head') %> <%- include('partials/nav') %>
 
-    <div id="wholePage" class="container w=75 p-4">
+<div id="wholePage" class="container w=75 p-4">
+  <h2 class="text-center">Your Dogs</h2>
 
-
-      <h2 class="text-center">Your Dogs</h2>
-
-    <div class="m-4">
-  <ul class="pagination justify-content-center">
-    <% if (page === 1) { %>
-    <li class="page-item"><a id="previous" class="page-link disabled" href=<%- (page - 1).toString()%>>Previous</a></li>
-    <% } else { %>
-      <li class="page-item"><a id="previous" class="page-link" href=<%- (page - 1).toString()%>>Previous</a></li>
+  <div class="m-4">
+    <ul class="pagination justify-content-center">
+      <% if (page === 1) { %>
+      <li class="page-item">
+        <a
+          id="previous"
+          class="page-link disabled"
+          href="<%-"
+          (page
+          -
+          1).toString()%
+          >>Previous</a
+        >
+      </li>
+      <% } else { %>
+      <li class="page-item">
+        <a id="previous" class="page-link" href="<%-" (page - 1).toString()%
+          >>Previous</a
+        >
+      </li>
       <% } %>
-    <li class="page-item"><a id="next" class="page-link" href=<%- (page + 1).toString()%>>Next</a></li>
-  </ul>
-</div>
+      <li class="page-item">
+        <a id="next" class="page-link" href="<%-" (page + 1).toString()%
+          >>Next</a
+        >
+      </li>
+    </ul>
+  </div>
 
-<div class="justify-content-center">
-<nav class="nav justify-content-center">
-  <a class="nav-link" href="/yourDogs/adoptable/1">Your Registered Dogs</a>
-  <a class="nav-link" href="/yourDogs/adopted/1">Your Adopoted Dogs</a>
-  <a class="nav-link" href="/yourDogs/1">All Your Dogs</a>
-</nav>
-</div>
+  <div class="justify-content-center">
+    <nav class="nav justify-content-center">
+      <a class="nav-link" href="/yourDogs/adoptable/1">Your Registered Dogs</a>
+      <a class="nav-link" href="/yourDogs/adopted/1">Your Adopoted Dogs</a>
+      <a class="nav-link" href="/yourDogs/1">All Your Dogs</a>
+    </nav>
+  </div>
 
-
-      <% yourDogs.forEach((dog)=> { %>
-        <div class="p-4">
-          <div class="card text-center">
-            <div class="card-header">
-              <%- dog.name %>
-            </div>
-            <div class="card-body">
-              <p class="card-text"><%- dog.description %></p>
-              <p class="card-text">Status: <%- dog.status %></p>
-              <% if (dog.status === "adoptable") { %>
-              <button href="#" id=<%-dog._id%> class="btn btn-primary">Remove Dog</button>
-              <% } else { %>
-             <p class="card-text"><b>Message from new owner: </b><br><%- dog.ownerMessage %></p>
-              <% } %>
-            </div>
-          </div>
-        </div>
-        <% }); %>
-
-
-
+  <% yourDogs.forEach((dog)=> { %>
+  <div class="p-4">
+    <div class="card text-center">
+      <div class="card-header"><%- dog.name %></div>
+      <div class="card-body">
+        <p class="card-text"><%- dog.description %></p>
+        <p class="card-text">Status: <%- dog.status %></p>
+        <% if (dog.status === "adoptable") { %>
+        <button href="#" id="<%-dog._id%">
+          class="btn btn-primary">Remove Dog
+        </button>
+        <% } else { %>
+        <p class="card-text">
+          <b>Message from new owner: </b><br /><%- dog.ownerMessage %>
+        </p>
+        <% } %>
+      </div>
     </div>
+  </div>
+  <% }); %>
+</div>
 
-    <%- include('partials/foot') %>
+<%- include('partials/foot') %>
 
-    <script>
+<script>
+  //Enable remove buttons:
 
-      //Enable remove buttons:
+  const page = document.getElementById("wholePage");
 
-      const page = document.getElementById('wholePage');
-  
+  page.addEventListener("click", async (e) => {
+    const isButton = e.target.nodeName === "BUTTON";
+    if (!isButton) {
+      return;
+    }
 
-      page.addEventListener("click", async (e) => {
-        const isButton = e.target.nodeName === 'BUTTON';
-        if (!isButton) {
-          return;
-        }
+    if (e.target.innerHTML === "Remove Dog") {
+      const dogId = e.target.id;
 
-      if (e.target.innerHTML === "Remove Dog"){
-        const dogId = e.target.id;
-
-        const res = await fetch('/delete', {
-          method: 'DELETE',
-          body: JSON.stringify({dogId}),
-          headers: {'Content-Type': 'application/json'}
-        })
-        .then(res=> window.location.reload())
-        .catch(err => console.log(err));
-      }
-
+      const res = await fetch("/delete", {
+        method: "DELETE",
+        body: JSON.stringify({ dogId }),
+        headers: { "Content-Type": "application/json" },
       })
-      
-   
-
-
-    </script>
+        .then((res) => window.location.reload())
+        .catch((err) => console.log(err));
+    }
+  });
+</script>
