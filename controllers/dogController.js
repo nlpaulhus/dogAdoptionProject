@@ -1,5 +1,5 @@
 import Dog from "../models/dog.js";
-import verify from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 //Error handler function:
 const handleErrors = (err) => {
@@ -16,7 +16,7 @@ const handleErrors = (err) => {
 
 //Helper function to get the currently logged in user's Id:
 const getCurrentUserId = (token) => {
-  const decoded = verify(token, process.env.SESSION_SECRET);
+  const decoded = jwt.verify(token, process.env.SESSION_SECRET);
   return decoded.id;
 };
 
@@ -42,16 +42,24 @@ export async function adoptable_get(req, res) {
   let { page } = req.params;
   const dogsPerPage = 10;
   page = parseInt(page);
+  let previous = (page - 1).toString();
+  let next = (page + 1).toString();
+  let skipValue = 0;
 
-  const adoptableDogs = await Dog.find({ status: "adoptable" })
-    .skip((page - 1) * dogsPerPage)
+  if (page > 1) {
+    skipValue = (page - 1) * dogsPerPage;
+  }
+
+  const adoptableDogGet = await Dog.find({ status: "adoptable" })
+    .skip(skipValue)
     .limit(dogsPerPage)
     .then((adoptableDogs) =>
-      res.render("adoptableDogs", {
+      res.status(200).render("adoptableDogs", {
         adoptableDogs,
         isLoggedIn,
         userId,
-        page,
+        previous,
+        next,
       })
     )
     .catch((err) => {
@@ -66,11 +74,19 @@ export async function adopted_get(req, res) {
   let { page } = req.params;
   const dogsPerPage = 10;
   page = parseInt(page);
+  let previous = (page - 1).toString();
+  let next = (page + 1).toString();
+  let skipValue = 0;
+
+  if (page > 1) {
+    skipValue = (page - 1) * dogsPerPage;
+  }
+
   try {
     const adoptedDogs = await Dog.find({ status: "adopted" })
-      .skip((page - 1) * dogsPerPage)
+      .skip(skipValue)
       .limit(dogsPerPage);
-    res.render("adoptedDogs", { adoptedDogs, isLoggedIn, page });
+    res.render("adoptedDogs", { adoptedDogs, isLoggedIn, previous, next });
   } catch (err) {
     res.status(401).message("Error connecting to database");
   }
@@ -127,17 +143,25 @@ export async function yourdogs_get(req, res) {
   const userId = getCurrentUserId(req.cookies.jwt);
   const dogsPerPage = 10;
   page = parseInt(page);
+  let previous = (page - 1).toString();
+  let next = (page + 1).toString();
+  let skipValue = 0;
+
+  if (page > 1) {
+    skipValue = (page - 1) * dogsPerPage;
+  }
 
   const yourDogs = await Dog.find({
     $or: [{ owner: userId }, { newOwnerId: userId }],
   })
-    .skip((page - 1) * dogsPerPage)
+    .skip(skipValue)
     .limit(dogsPerPage)
     .then((yourDogs) =>
       res.render("yourDogs", {
         yourDogs,
         isLoggedIn,
-        page,
+        previous,
+        next,
       })
     )
     .catch((err) => {
@@ -152,6 +176,13 @@ export async function yourdogs_adoptable_get(req, res) {
   const userId = getCurrentUserId(req.cookies.jwt);
   const dogsPerPage = 10;
   page = parseInt(page);
+  let previous = (page - 1).toString();
+  let next = (page + 1).toString();
+  let skipValue = 0;
+
+  if (page > 1) {
+    skipValue = (page - 1) * dogsPerPage;
+  }
 
   const yourDogs = await Dog.find({
     $and: [
@@ -159,13 +190,14 @@ export async function yourdogs_adoptable_get(req, res) {
       { $or: [{ owner: userId }, { newOwnerId: userId }] },
     ],
   })
-    .skip((page - 1) * dogsPerPage)
+    .skip(skipValue)
     .limit(dogsPerPage)
     .then((yourDogs) =>
       res.render("yourDogs", {
         yourDogs,
         isLoggedIn,
-        page,
+        previous,
+        next,
       })
     )
     .catch((err) => {
@@ -180,6 +212,14 @@ export async function yourdogs_adopted_get(req, res) {
   const userId = getCurrentUserId(req.cookies.jwt);
   const dogsPerPage = 10;
   page = parseInt(page);
+  let previous = (page - 1).toString();
+  let next = (page + 1).toString();
+
+  let skipValue = 0;
+
+  if (page > 1) {
+    skipValue = (page - 1) * dogsPerPage;
+  }
 
   const yourDogs = await Dog.find({
     $and: [
@@ -187,13 +227,14 @@ export async function yourdogs_adopted_get(req, res) {
       { $or: [{ owner: userId }, { newOwnerId: userId }] },
     ],
   })
-    .skip((page - 1) * dogsPerPage)
+    .skip(skipValue)
     .limit(dogsPerPage)
     .then((yourDogs) =>
       res.render("yourDogs", {
         yourDogs,
         isLoggedIn,
-        page,
+        previous,
+        next,
       })
     )
     .catch((err) => {

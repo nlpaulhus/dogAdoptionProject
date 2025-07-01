@@ -5,29 +5,17 @@
 
   <div class="m-4">
     <ul class="pagination justify-content-center">
-      <% if (page === 1) { %>
+      <% if (previous < 1) { %>
       <li class="page-item">
-        <a
-          id="previous"
-          class="page-link disabled"
-          href="<%-"
-          (page
-          -
-          1).toString()%
-          >>Previous</a
-        >
+        <a id="previous" class="page-link disabled" href="">Previous</a>
       </li>
       <% } else { %>
       <li class="page-item">
-        <a id="previous" class="page-link" href="<%-" (page - 1).toString()%
-          >>Previous</a
-        >
+        <a id="previous" class="page-link" href="<%- previous %>">Previous</a>
       </li>
       <% } %>
       <li class="page-item">
-        <a id="next" class="page-link" href="<%-" (page + 1).toString()%
-          >>Next</a
-        >
+        <a id="next" class="page-link" href="<%- next %>">Next</a>
       </li>
     </ul>
   </div>
@@ -48,9 +36,7 @@
         <p class="card-text"><%- dog.description %></p>
         <p class="card-text">Status: <%- dog.status %></p>
         <% if (dog.status === "adoptable") { %>
-        <button href="#" id="<%-dog._id%">
-          class="btn btn-primary">Remove Dog
-        </button>
+        <button href="#" id="<%- dog._id %>" class="btn btn-primary">Remove Dog</button>
         <% } else { %>
         <p class="card-text">
           <b>Message from new owner: </b><br /><%- dog.ownerMessage %>

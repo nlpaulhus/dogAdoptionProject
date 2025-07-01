@@ -60,6 +60,10 @@ app.use("/adopt", adopt);
 app.use("/delete", deleteDog);
 app.use("/yourDogs", yourDogs);
 
+app.get("/api/welcome", (req, res) => {
+  res.status(200).send({ message: "Welcome" });
+});
+
 app.use((req, res, next) => {
   res.status(404).render("404", { isLoggedIn: false });
 });
@@ -70,3 +74,5 @@ mongooseConnectDB(process.env.dbURI);
 app.listen(3000, () => {
   console.log("Listening on port 3000");
 });
+
+export default app;

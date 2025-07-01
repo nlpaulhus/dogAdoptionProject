@@ -1,11 +1,11 @@
-import  User from "../models/user.js";
+import User from "../models/user.js";
 import { compare } from "bcrypt";
-import sign from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 const maxAge = 24 * 60 * 60;
 
 //Helper function to create jwt token:
 const createToken = (id) => {
-  return sign({ id }, process.env.SESSION_SECRET, { expiresIn: maxAge });
+  return jwt.sign({ id }, process.env.SESSION_SECRET, { expiresIn: maxAge });
 };
 
 //Helper function to create errors object:

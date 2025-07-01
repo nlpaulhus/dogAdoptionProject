@@ -5,45 +5,35 @@
 
   <div class="m-4">
     <ul class="pagination justify-content-center">
-      <% if (page === 1) { %>
+      <% if (previous < 1) { %>
       <li class="page-item">
-        <a
-          id="previous"
-          class="page-link disabled"
-          href="<%-"
-          (page
-          -
-          1).toString()%
-          >>Previous</a
-        >
+        <a id="previous" class="page-link disabled" href="">Previous</a>
       </li>
       <% } else { %>
       <li class="page-item">
-        <a id="previous" class="page-link" href="<%-" (page - 1).toString()%
-          >>Previous</a
-        >
+        <a id="previous" class="page-link" href="<%-previous%>">Previous</a>
       </li>
       <% } %>
       <li class="page-item">
-        <a id="next" class="page-link" href="<%-" (page + 1).toString()%
-          >>Next</a
-        >
+        <a id="next" class="page-link" href="<%-next%>">Next</a>
       </li>
     </ul>
   </div>
 
   <% adoptableDogs.forEach((dog)=> { %>
-  <div class="p-4">
+  <div class="dogs p-4">
     <div class="card text-center">
       <div class="card-header"><%- dog.name %></div>
       <div class="card-body">
         <p class="card-text"><%- dog.description %></p>
-        <% if (dog.owner === userId) { %>
-        <button href="#" id="<%-dog._id%">
-          class="btn btn-primary">Remove Dog
+        <% if (dog.owner===userId) { %>
+        <button href="#" id="<%-dog._id%>" class="btn btn-primary">
+          Remove Dog
         </button>
         <% } else { %>
-        <button href="#" id="<%-dog._id%">class="btn btn-primary">Adopt</button>
+        <button href="#" id="<%-dog._id%>" class="btn btn-primary">
+          Adopt
+        </button>
         <% } %>
       </div>
     </div>
@@ -55,14 +45,19 @@
 
 <script>
   const page = document.getElementById("wholePage");
+  const dogs = document.getElementsByClassName("dogs");
+  document.addEventListener("DOMContentLoaded", function (res) {
+    console.log(dogs.length);
+  });
 
   page.addEventListener("click", async (e) => {
     const isButton = e.target.nodeName === "BUTTON";
     if (!isButton) {
       return;
     }
-
+    console.log(e.target.innerHTML);
     if (e.target.innerHTML === "Adopt") {
+      console.log("adopt button hit");
       const dogId = e.target.id;
 
       window.location.replace(`/adopt/${dogId}`);
