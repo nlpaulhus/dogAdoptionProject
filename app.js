@@ -35,6 +35,18 @@ import adopt from "./routes/adopt.js";
 import deleteDog from "./routes/deleteDog.js";
 import yourDogs from "./routes/yourDogs.js";
 
+//Import api test routes:
+import apiLogin from "./apiRoutes/apiLogin.js";
+import apiLogout from "./apiRoutes/apiLogout.js";
+import apiSignup from "./apiRoutes/apiSignup.js";
+import apiRegisterDog from "./apiRoutes/apiRegisterDog.js";
+import apiAdoptableDogs from "./apiRoutes/apiAdoptableDogs.js";
+import apiAdoptedDogs from "./apiRoutes/apiAdoptedDogs.js";
+import apiHome from "./apiRoutes/apiHome.js";
+import apiAdopt from "./apiRoutes/apiAdopt.js";
+import apiDeleteDog from "./apiRoutes/apiDeleteDog.js";
+import apiYourDogs from "./apiRoutes/apiYourDogs.js";
+
 //Middleware:
 app.use(json());
 app.use(urlencoded({ extended: true }));

@@ -21,7 +21,7 @@ const getCurrentUserId = (token) => {
 };
 
 //Register a new dog:
-export async function registerdog_post(req, res) {
+export async function api_registerdog_post(req, res) {
   const { name, description } = req.body;
   const status = "adoptable";
   const owner = getCurrentUserId(req.cookies.jwt);
@@ -36,7 +36,7 @@ export async function registerdog_post(req, res) {
 }
 
 //Get adoptable dogs to populate Adoptable Dogs page:
-export async function adoptable_get(req, res) {
+export async function api_adoptable_get(req, res) {
   let isLoggedIn = res.locals.isLoggedIn;
   const userId = getCurrentUserId(req.cookies.jwt);
   let { page } = req.params;
@@ -53,7 +53,15 @@ export async function adoptable_get(req, res) {
   const adoptableDogGet = await Dog.find({ status: "adoptable" })
     .skip(skipValue)
     .limit(dogsPerPage)
-    .then((adoptableDogs) => res.status(200).json({ adoptableDogs }))
+    .then((adoptableDogs) =>
+      res.status(200).render("adoptableDogs", {
+        adoptableDogs,
+        isLoggedIn,
+        userId,
+        previous,
+        next,
+      })
+    )
     .catch((err) => {
       console.log(err);
       res.status(401).json("Error connecting to database.");
@@ -61,7 +69,7 @@ export async function adoptable_get(req, res) {
 }
 
 //Get adopted dogs to fill Adopted Dogs page:
-export async function adopted_get(req, res) {
+export async function api_adopted_get(req, res) {
   let isLoggedIn = res.locals.isLoggedIn;
   let { page } = req.params;
   const dogsPerPage = 10;
@@ -78,14 +86,14 @@ export async function adopted_get(req, res) {
     const adoptedDogs = await Dog.find({ status: "adopted" })
       .skip(skipValue)
       .limit(dogsPerPage);
-    res.status(201).json({ adoptedDogs });
+    res.render("adoptedDogs", { adoptedDogs, isLoggedIn, previous, next });
   } catch (err) {
     res.status(401).message("Error connecting to database");
   }
 }
 
 //Delete a dog you registered:
-export async function dog_delete(req, res) {
+export async function api_dog_delete(req, res) {
   const { dogId } = req.body;
   const currentUserId = getCurrentUserId(req.cookies.jwt);
 
@@ -98,14 +106,14 @@ export async function dog_delete(req, res) {
 
   if (ownerId === currentUserId && dog.status === "adoptable") {
     const deletedDog = await Dog.findOneAndDelete({ _id: dogId });
-    res.status(201).json({ deletedDog });
+    res.status(201).json("Dog has been deleted.");
   } else {
     res.status(401).json("Error deleting dog from database.");
   }
 }
 
 //Adopt a dog you haven't registered:
-export async function adopt_patch(req, res) {
+export async function api_adopt_patch(req, res) {
   const { ownerMessage, dogId } = req.body;
   const newOwnerId = getCurrentUserId(req.cookies.jwt);
 
@@ -117,20 +125,19 @@ export async function adopt_patch(req, res) {
       { status: "adopted", newOwnerId: newOwnerId, ownerMessage: ownerMessage },
       { new: true }
     );
-
-    res.status(201).json({ doc });
   } else {
     console.error("This dog is not adoptable");
   }
+  res.status(201).json("Dog successfully adopted.");
 }
 
 //Brings you to the leave message page and the final adopt button:
-export function adopt_get(req, res) {
+export function api_adopt_get(req, res) {
   const { dogId } = req.params;
-  return res.status(201).json({ dogId });
+  return res.render("adopt", { isLoggedIn: true, dogId: dogId });
 }
 
-export async function yourdogs_get(req, res) {
+export async function api_yourdogs_get(req, res) {
   let { page } = req.params;
   let isLoggedIn = res.locals.isLoggedIn;
   const userId = getCurrentUserId(req.cookies.jwt);
@@ -149,14 +156,21 @@ export async function yourdogs_get(req, res) {
   })
     .skip(skipValue)
     .limit(dogsPerPage)
-    .then((yourDogs) => res.status(201).json(yourDogs))
+    .then((yourDogs) =>
+      res.render("yourDogs", {
+        yourDogs,
+        isLoggedIn,
+        previous,
+        next,
+      })
+    )
     .catch((err) => {
       console.log(err);
       res.status(401).json("Error connecting to database.");
     });
 }
 
-export async function yourdogs_adoptable_get(req, res) {
+export async function api_yourdogs_adoptable_get(req, res) {
   let { page } = req.params;
   let isLoggedIn = res.locals.isLoggedIn;
   const userId = getCurrentUserId(req.cookies.jwt);
@@ -178,14 +192,21 @@ export async function yourdogs_adoptable_get(req, res) {
   })
     .skip(skipValue)
     .limit(dogsPerPage)
-    .then((yourDogs) => res.status(201).json({ yourDogs }))
+    .then((yourDogs) =>
+      res.render("yourDogs", {
+        yourDogs,
+        isLoggedIn,
+        previous,
+        next,
+      })
+    )
     .catch((err) => {
       console.log(err);
       res.status(401).json("Error connecting to database.");
     });
 }
 
-export async function yourdogs_adopted_get(req, res) {
+export async function api_yourdogs_adopted_get(req, res) {
   let { page } = req.params;
   let isLoggedIn = res.locals.isLoggedIn;
   const userId = getCurrentUserId(req.cookies.jwt);
@@ -208,7 +229,14 @@ export async function yourdogs_adopted_get(req, res) {
   })
     .skip(skipValue)
     .limit(dogsPerPage)
-    .then((yourDogs) => res.status(201).json({ yourDogs }))
+    .then((yourDogs) =>
+      res.render("yourDogs", {
+        yourDogs,
+        isLoggedIn,
+        previous,
+        next,
+      })
+    )
     .catch((err) => {
       console.log(err);
       res.status(401).json("Error connecting to database.");
