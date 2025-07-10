@@ -37,15 +37,14 @@ import yourDogs from "./routes/yourDogs.js";
 
 //Import api test routes:
 import apiLogin from "./apiRoutes/apiLogin.js";
-import apiLogout from "./apiRoutes/apiLogout.js";
 import apiSignup from "./apiRoutes/apiSignup.js";
 import apiRegisterDog from "./apiRoutes/apiRegisterDog.js";
 import apiAdoptableDogs from "./apiRoutes/apiAdoptableDogs.js";
 import apiAdoptedDogs from "./apiRoutes/apiAdoptedDogs.js";
-import apiHome from "./apiRoutes/apiHome.js";
 import apiAdopt from "./apiRoutes/apiAdopt.js";
 import apiDeleteDog from "./apiRoutes/apiDeleteDog.js";
 import apiYourDogs from "./apiRoutes/apiYourDogs.js";
+import apiYourAdoptedDogs from "./apiRoutes/apiYourAdoptedDogs.js";
 
 //Middleware:
 app.use(json());
@@ -71,6 +70,17 @@ app.use("/adoptedDogs", adoptedDogs);
 app.use("/adopt", adopt);
 app.use("/delete", deleteDog);
 app.use("/yourDogs", yourDogs);
+
+//API TEST ROUTES:
+app.use("/api/login", apiLogin);
+app.use("/api/signup", apiSignup);
+app.use("/api/registerDog", apiRegisterDog);
+app.use("/api/adoptableDogs", apiAdoptableDogs);
+app.use("/api/adoptedDogs", apiAdoptedDogs);
+app.use("/api/adopt", apiAdopt);
+app.use("/api/delete", apiDeleteDog);
+app.use("/api/yourDogs", apiYourDogs);
+app.use("/api/youradopteddogs", apiYourAdoptedDogs);
 
 app.get("/api/welcome", (req, res) => {
   res.status(200).send({ message: "Welcome" });
